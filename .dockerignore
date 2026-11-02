@@ -1,0 +1,13 @@
+.git
+.github
+build/
+dist/
+scripts/
+.vscode/
+.context/
+examples/
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.*

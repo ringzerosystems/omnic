@@ -1,0 +1,12 @@
+{
+  "name": "whatsapp-ai-agent",
+  "version": "1.0.0",
+  "description": "Meta WhatsApp Business Platform AI Agent example with omnic",
+  "main": "agent.js",
+  "scripts": {
+    "start": "node agent.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

@@ -1,0 +1,45 @@
+# Local stack only; never a deploy artifact.
+services:
+  server:
+    container_name: omnic-server
+    build:
+      context: .
+      target: runtime
+    environment:
+      OMNIC_ADDR: ":8080"
+      OMNIC_PPROF: ":6060"
+      OMNIC_DEV: "true"
+      OMNIC_TWILIO_AUTH_TOKEN: "${OMNIC_TWILIO_AUTH_TOKEN:-${TWEMU_TWILIO_AUTH_TOKEN:-authtoken}}"
+      OMNIC_TWILIO_UPSTREAM_URL: "${OMNIC_TWILIO_UPSTREAM_URL:-${TWEMU_TWILIO_UPSTREAM_URL:-}}"
+      OMNIC_TWILIO_UPSTREAM_METHOD: "${OMNIC_TWILIO_UPSTREAM_METHOD:-${TWEMU_TWILIO_UPSTREAM_METHOD:-POST}}"
+      OMNIC_DELIVERY_DELAY: "${OMNIC_DELIVERY_DELAY:-${TWEMU_DELIVERY_DELAY:-50ms}}"
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8090:8080" # app; host 8090 to avoid clashing with other local containers
+      - "127.0.0.1:6060:6060" # pprof, host loopback only
+
+  prometheus:
+    container_name: omnic-prometheus
+    image: prom/prometheus:v3.6.0
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "127.0.0.1:9090:9090"
+
+  grafana:
+    container_name: omnic-grafana
+    image: grafana/grafana:12.2.0
+    environment:
+      # Test project: anonymous admin, no login form.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_AUTH_BASIC_ENABLED: "false"
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on: [prometheus]
