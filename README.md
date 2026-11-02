@@ -1,8 +1,9 @@
 # omnic
 
-[![Go Version](https://img.shields.io/badge/Go-1.27+-00ADD8.svg?style=for-the-badge&logo=go)](https://go.dev/)
+[![RingZero Systems](https://img.shields.io/badge/Vendor-RingZero_Systems_LLC-00599C?style=for-the-badge&logo=go)](https://ringzerosystems.com)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-red.svg?style=for-the-badge)](./LICENSE)
 [![Commercial License](https://img.shields.io/badge/License-Commercial-blue.svg?style=for-the-badge)](./LICENSE-COMMERCIAL.md)
+[![Go Version](https://img.shields.io/badge/Go-1.27+-00ADD8.svg?style=for-the-badge&logo=go)](https://go.dev/)
 
 A high-performance, concurrent, zero-dependency local communications emulator for **Twilio** (Programmable Messaging, Numbers, Messaging Services), **Meta WhatsApp Cloud API**, and **Telegram Bot API**.
 
@@ -176,11 +177,14 @@ See [Development & Observability](docs/development.md) for details on the local 
 
 ## License & Commercial Use
 
-Copyright &copy; 2026 Mark Horila / RingZero Systems.
+Copyright &copy; 2026 Mark Horila / RingZero Systems LLC.
 
 `omnic` is dual-licensed:
 
-1. **Open Source ([AGPL-3.0](./LICENSE)):** Free for open-source projects, evaluation, and use cases that comply with the GNU Affero General Public License v3.0.
-2. **Commercial License ([LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md)):** Organizations deploying, embedding, or modifying `omnic` in proprietary commercial environments or hosted services without AGPL-3.0 copyleft obligations may obtain a commercial license from **RingZero Systems**.
+1. **Open Source ([AGPL-3.0](./LICENSE)):** Free for open-source development, academic evaluation, and workflows that comply with the GNU Affero General Public License v3.0.
+2. **Commercial License ([LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md)):** Organizations deploying, embedding, or modifying `omnic` in proprietary commercial environments or hosted internal developer platforms without AGPL-3.0 copyleft obligations may obtain a commercial license from **RingZero Systems LLC**.
 
-For commercial licensing inquiries, contact `licensing@ringzerosystems.com`.
+For commercial licensing, enterprise pilots, or custom AST/compiler integration sprints, contact:
+
+- **Web:** [https://ringzerosystems.com](https://ringzerosystems.com)
+- **Direct:** `licensing@ringzerosystems.com`
