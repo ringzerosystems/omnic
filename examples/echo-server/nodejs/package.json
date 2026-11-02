@@ -1,0 +1,13 @@
+{
+  "name": "omnic-echo-server-nodejs",
+  "version": "1.0.0",
+  "description": "Reference echo server in Node.js for omnic",
+  "main": "echo.js",
+  "scripts": {
+    "start": "node echo.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "twilio": "^5.0.4"
+  }
+}

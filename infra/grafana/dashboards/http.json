@@ -1,0 +1,317 @@
+{
+ "uid": "goproj-http",
+ "title": "HTTP Server",
+ "schemaVersion": 39,
+ "editable": true,
+ "refresh": "5s",
+ "time": {
+  "from": "now-15m",
+  "to": "now"
+ },
+ "timezone": "browser",
+ "tags": [
+  "goproj"
+ ],
+ "panels": [
+  {
+   "type": "timeseries",
+   "title": "Requests/s by route",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "reqps",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "sum(rate(http_server_request_duration_seconds_count[$__rate_interval])) by (http_request_method, http_route)",
+     "legendFormat": "{{http_request_method}} {{http_route}}",
+     "refId": "A"
+    }
+   ],
+   "id": 1
+  },
+  {
+   "type": "timeseries",
+   "title": "Requests/s by status class",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 0,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "reqps",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "stacking": {
+       "mode": "normal"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "sum(label_replace(rate(http_server_request_duration_seconds_count[$__rate_interval]), \"code\", \"$1xx\", \"http_response_status_code\", \"(.)..\"))  by (code)",
+     "legendFormat": "{{code}}",
+     "refId": "A"
+    }
+   ],
+   "id": 2
+  },
+  {
+   "type": "timeseries",
+   "title": "Error rate (5xx)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 8,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "(sum(rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[$__rate_interval])) by (http_route) or 0 * sum(rate(http_server_request_duration_seconds_count[$__rate_interval])) by (http_route)) / sum(rate(http_server_request_duration_seconds_count[$__rate_interval])) by (http_route)",
+     "legendFormat": "{{http_route}}",
+     "refId": "A"
+    }
+   ],
+   "id": 3
+  },
+  {
+   "type": "timeseries",
+   "title": "Latency quantiles",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 8,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "histogram_quantile(0.50, sum(rate(http_server_request_duration_seconds_bucket[$__rate_interval])) by (le, http_route))",
+     "legendFormat": "p50 {{http_route}}",
+     "refId": "A"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket[$__rate_interval])) by (le, http_route))",
+     "legendFormat": "p95 {{http_route}}",
+     "refId": "B"
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "histogram_quantile(0.99, sum(rate(http_server_request_duration_seconds_bucket[$__rate_interval])) by (le, http_route))",
+     "legendFormat": "p99 {{http_route}}",
+     "refId": "C"
+    }
+   ],
+   "id": 4
+  },
+  {
+   "type": "timeseries",
+   "title": "Active requests",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 16,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "sum(http_server_active_requests) by (http_request_method)",
+     "legendFormat": "{{http_request_method}}",
+     "refId": "A"
+    }
+   ],
+   "id": 5
+  },
+  {
+   "type": "timeseries",
+   "title": "Response body size p95",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 16,
+    "w": 12,
+    "h": 8
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi",
+     "sort": "desc"
+    }
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prometheus"
+     },
+     "expr": "histogram_quantile(0.95, sum(rate(http_server_response_body_size_bytes_bucket[$__rate_interval])) by (le, http_route))",
+     "legendFormat": "{{http_route}}",
+     "refId": "A"
+    }
+   ],
+   "id": 6
+  }
+ ],
+ "templating": {
+  "list": []
+ }
+}

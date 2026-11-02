@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Server",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "program": "${workspaceFolder}/build/omnic-debug",
+      "args": ["-dev"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "make build-debug"
+    },
+    {
+      "name": "Debug Server (docker)",
+      "type": "go",
+      "request": "attach",
+      "mode": "remote",
+      "host": "127.0.0.1",
+      "port": 2345,
+      "substitutePath": [{ "from": "${workspaceFolder}", "to": "/src" }],
+      "preLaunchTask": "make infra-debug"
+    }
+  ]
+}

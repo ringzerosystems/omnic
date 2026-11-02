@@ -1,0 +1,13 @@
+{
+  "name": "omnic-ai-agent-nodejs",
+  "version": "1.0.0",
+  "description": "Reference AI conversational agent server in Node.js for omnic",
+  "main": "agent.js",
+  "scripts": {
+    "start": "node agent.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "twilio": "^5.0.4"
+  }
+}

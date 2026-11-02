@@ -1,0 +1,101 @@
+version: 1
+
+# Architecture guardrails for AI-generated code (run via `make arch-go`).
+# Layering (top may depend on bottom, never the reverse):
+#
+#   cmd/omnic  ->  internal/handler  ->  internal/service  ->  internal/repository
+#                                     \->  internal/domain  <-/
+#
+# Rules for layers that don't exist yet (service, repository, domain) pass
+# vacuously today and start enforcing the moment the first file lands there.
+
+threshold:
+  compliance: 100
+  coverage: 100
+
+dependenciesRules:
+  # cmd/ is wiring only: builds the app from internal packages.
+  - package: "github.com.ringzerosystems.omnic.cmd.**"
+    shouldNotDependsOn:
+      internal:
+        # no cmd -> cmd cross-imports; each binary under cmd/ is self-contained
+        - "github.com.ringzerosystems.omnic.cmd.**"
+
+  # internal/ never imports entrypoints, and business/storage code never
+  # reaches back up into the transport layer.
+  - package: "github.com.ringzerosystems.omnic.internal.**"
+    shouldNotDependsOn:
+      internal:
+        - "github.com.ringzerosystems.omnic.cmd.**"
+
+  # Transport layer: HTTP concerns live here and only here. Handlers call
+  # services and unified storage; storage never reaches back up into transport.
+  - package: "github.com.ringzerosystems.omnic.internal.handler.**"
+    shouldNotDependsOn:
+      internal:
+        - "github.com.ringzerosystems.omnic.internal.storage.**"
+
+  # Business layer: pure logic. No transport framework, no direct drivers —
+  # storage access goes through interfaces defined here or in domain.
+  - package: "github.com.ringzerosystems.omnic.internal.service.**"
+    shouldNotDependsOn:
+      internal:
+        - "github.com.ringzerosystems.omnic.internal.handler.**"
+      external:
+        - "github.com.labstack.echo.**"
+      standard:
+        - "database.sql.**"
+
+  # Storage layer: never calls upward into transport or business logic.
+  - package: "github.com.ringzerosystems.omnic.internal.repository.**"
+    shouldNotDependsOn:
+      internal:
+        - "github.com.ringzerosystems.omnic.internal.handler.**"
+        - "github.com.ringzerosystems.omnic.internal.service.**"
+      external:
+        - "github.com.labstack.echo.**"
+
+  # Domain core: plain types and invariants. Standard library only —
+  # no framework, no logger, no other internal package.
+  - package: "github.com.ringzerosystems.omnic.internal.domain.**"
+    shouldOnlyDependsOn:
+      standard:
+        - ".+"
+
+functionsRules:
+  # Hard complexity caps on production code.
+  - package: "github.com.ringzerosystems.omnic.internal.repository.**"
+    maxParameters: 5
+    maxReturnValues: 3
+    maxLines: 80
+    maxPublicFunctionPerFile: 35
+  - package: "github.com.ringzerosystems.omnic.cmd.**"
+    maxParameters: 5
+    maxReturnValues: 3
+    maxLines: 80
+    maxPublicFunctionPerFile: 10
+  - package: "github.com.ringzerosystems.omnic.internal.handler.**"
+    maxParameters: 5
+    maxReturnValues: 3
+    maxLines: 80
+    maxPublicFunctionPerFile: 10
+  - package: "github.com.ringzerosystems.omnic.internal.service.**"
+    maxParameters: 5
+    maxReturnValues: 3
+    maxLines: 80
+    maxPublicFunctionPerFile: 10
+  - package: "github.com.ringzerosystems.omnic.internal.domain.**"
+    maxParameters: 5
+    maxReturnValues: 3
+    maxLines: 80
+    maxPublicFunctionPerFile: 10
+  - package: "github.com.ringzerosystems.omnic.internal.ffmpeg.**"
+    maxParameters: 5
+    maxReturnValues: 3
+    maxLines: 80
+    maxPublicFunctionPerFile: 10
+  - package: "github.com.ringzerosystems.omnic.test.**"
+    maxParameters: 5
+    maxReturnValues: 3
+    maxLines: 80
+    maxPublicFunctionPerFile: 10

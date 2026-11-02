@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "make build-debug",
+      "type": "shell",
+      "command": "make build-debug",
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "make infra-debug",
+      "type": "shell",
+      "command": "make infra-debug",
+      "problemMatcher": []
+    }
+  ]
+}
